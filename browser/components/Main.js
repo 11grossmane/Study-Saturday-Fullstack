@@ -1,39 +1,20 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-
+import { connect } from 'react-redux';
 import StudentList from './StudentList.js';
 import SingleStudent from './SingleStudent.js';
+import { fetchAndSetStudents } from '../store';
 
-export default class Main extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      students: [],
-      selectedStudent: {},
-    };
-
-    this.selectStudent = this.selectStudent.bind(this);
-  }
-
+class Main extends Component {
   componentDidMount() {
-    this.getStudents();
+    this.props.fetchStudents();
   }
 
-  async getStudents() {
-    console.log('fetching');
-    try {
-      const { data } = await axios.get('/student');
-      this.setState({ students: data });
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
-  selectStudent(student) {
-    return this.setState({
-      selectedStudent: student,
-    });
-  }
+  // selectStudent(student) {
+  //   return this.setprops({
+  //     selectedStudent: student,
+  //   });
+  // }
 
   render() {
     return (
@@ -46,15 +27,15 @@ export default class Main extends Component {
               <th>Tests</th>
             </tr>
           </thead>
-          <StudentList
-            students={this.state.students}
-            selectStudent={this.selectStudent}
-          />
+          <StudentList />
         </table>
-        {this.state.selectedStudent.id ? (
-          <SingleStudent student={this.state.selectedStudent} />
-        ) : null}
+        {this.props.selectedStudent.id ? <SingleStudent /> : null}
       </div>
     );
   }
 }
+
+export default connect(
+  ({ students, selectedStudent }) => ({ students, selectedStudent }),
+  { fetchStudents }
+)(Main);
