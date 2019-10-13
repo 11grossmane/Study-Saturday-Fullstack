@@ -28,6 +28,17 @@ router.put('/:id', function(req, res, next) {
     .catch(next);
 });
 
+router.post('/', async (req, res, next) => {
+  try {
+    console.log('something ');
+    const newStudent = await Student.create(req.body);
+    console.log(`new student from db, inside route ${newStudent}`);
+    res.json(newStudent);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 router.delete('/:id', function(req, res, next) {
   Student.destroy({
     where: {

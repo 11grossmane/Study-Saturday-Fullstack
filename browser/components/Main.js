@@ -1,13 +1,17 @@
 import React, { Component } from 'react';
+import { Route, Link } from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import StudentList from './StudentList.js';
 import SingleStudent from './SingleStudent.js';
+import AddStudent from './AddStudent';
 import { fetchAndSetStudents } from '../store';
 
 class Main extends Component {
   componentDidMount() {
-    this.props.fetchStudents();
+    console.log('TCL: Main -> componentDidMount -> this.props', this.props);
+    this.props.fetchAndSetStudents();
+    console.log('TCL: Main -> componentDidMount -> this.props', this.props);
   }
 
   // selectStudent(student) {
@@ -20,6 +24,8 @@ class Main extends Component {
     return (
       <div>
         <h1>Students</h1>
+        <Route path="/addStudent" component={AddStudent} />
+        <Link to={`/addStudent`}>Add Student</Link>
         <table>
           <thead>
             <tr>
@@ -27,7 +33,7 @@ class Main extends Component {
               <th>Tests</th>
             </tr>
           </thead>
-          <StudentList />
+          {this.props.students[0] && <StudentList />}
         </table>
         {this.props.selectedStudent.id ? <SingleStudent /> : null}
       </div>
@@ -37,5 +43,5 @@ class Main extends Component {
 
 export default connect(
   ({ students, selectedStudent }) => ({ students, selectedStudent }),
-  { fetchStudents }
+  { fetchAndSetStudents }
 )(Main);

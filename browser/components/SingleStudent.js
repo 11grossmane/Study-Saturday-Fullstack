@@ -1,18 +1,18 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
+import { withRouter } from 'react-router-dom';
 const avgGrade = tests => {
   return Math.round(
     tests.map(test => test.grade).reduce((x, y) => x + y) / tests.length
   );
 };
 
-const SingleSelectedStudent = props => {
+const SingleStudent = props => {
   console.log('ppp', props);
   return (
     <div>
-      <h3>{props.selectedstudent.fullName}</h3>
-      <h3>Average grade: {avgGrade(props.selectedstudent.tests)}%</h3>
+      <h3>{props.selectedStudent.fullName}</h3>
+      <h3>Average grade: {avgGrade(props.selectedStudent.tests)}%</h3>
       <div>
         <table>
           <thead>
@@ -22,7 +22,7 @@ const SingleSelectedStudent = props => {
             </tr>
           </thead>
           <tbody>
-            {props.selectedstudent.tests.map(test => {
+            {props.selectedStudent.tests.map(test => {
               return (
                 <tr key={test.id}>
                   <td>{test.subject}</td>
@@ -37,6 +37,8 @@ const SingleSelectedStudent = props => {
   );
 };
 
-export default connect(({ selectedSelectedStudent }) => ({
-  selectedSelectedStudent,
-}))(SingleSelectedStudent);
+export default withRouter(
+  connect(({ selectedStudent }) => ({
+    selectedStudent,
+  }))(SingleStudent)
+);

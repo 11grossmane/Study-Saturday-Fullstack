@@ -4,31 +4,49 @@ import thunkMiddleware from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import axios from 'axios';
 
-// export const GET_STUDENTS = 'GET_STUDENTS';
-// export const GET_SELECTED_STUDENT = 'GET_SELECTED_STUDENT';
 const SET_STUDENTS = 'SET_STUDENTS';
 const SET_SINGLE_STUDENT = 'SET_SINGLE_STUDENT';
-
+const ADD_STUDENT = 'ADD_STUDENT';
 //only exporting the thunk that will call these
 const setStudents = students => {
   return { type: SET_STUDENTS, students };
 };
 
-export const setSingleStudents = selectedStudent => {
+export const setSingleStudent = selectedStudent => {
   return { type: SET_SINGLE_STUDENT, selectedStudent };
 };
 
-export const fetchAndSetStudents = () => {
-  return async dispatch => {
+const addStudent = newStudent => {
+  return { type: ADD_STUDENT, newStudent };
+};
+
+export function fetchAndSetStudents() {
+  return async function(dispatch) {
     try {
-      const { students } = await axios.get('/students');
-      if (!students) throw new Error('did not get students');
-      dispatch(setStudents(students));
+      const { data } = await axios.get('/student');
+      console.log('TCL: fetchAndSetStudents -> students', data);
+      if (!data) throw new Error('did not get students');
+      dispatch(setStudents(data));
     } catch (error) {
       console.error(error);
     }
   };
-};
+}
+
+//updated both db (inside post) and state (with action)
+export function updateAndAddStudent(newStudent) {
+  return async function(dispatch) {
+    try {
+      console.log('newstu inside thunk', newStudent);
+      const data = await axios.post('/student', { ...newStudent });
+      console.log('newStu from db', data);
+      if (!data) throw new Error('could not put student');
+      dispatch(addStudent(newStudent));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+}
 const initialState = {
   students: [],
   selectedStudent: {},
@@ -39,6 +57,8 @@ const reducer = (state = initialState, action) => {
       return { ...state, students: action.students };
     case SET_SINGLE_STUDENT:
       return { ...state, selectedStudent: action.selectedStudent };
+    case ADD_STUDENT:
+      return { ...state, students: [...state.students, action.newStudent] };
     default:
       return state;
   }
@@ -48,4 +68,5 @@ const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
 );
 
-export default createStore(reducer, middleware);
+const store = createStore(reducer, middleware);
+export default store;

@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { setSingleStudent } from '../store';
+import { withRouter } from 'react-router-dom';
 
 const StudentList = props => {
   console.log('p', props);
