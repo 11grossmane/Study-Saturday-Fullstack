@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
 import { connect, useDispatch } from 'react-redux';
+import { Route, Redirect } from 'react-router-dom';
 import { updateAndAddStudent } from '../store';
 import { withRouter } from 'react-router-dom';
+import Main from './Main';
 
 const AddStudent = props => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [submitted, setSubmit] = useState(false);
   const dispatch = useDispatch();
 
   function handleSubmit(event) {
@@ -22,9 +25,10 @@ const AddStudent = props => {
     setFirstName('');
     setLastName('');
     setEmail('');
+    setSubmit(true);
   }
 
-  return (
+  return !submitted ? (
     <form onSubmit={handleSubmit}>
       <label htmlFor="firstName">firstName</label>
       <input
@@ -49,6 +53,11 @@ const AddStudent = props => {
       />
       <button type="submit">Submit</button>
     </form>
+  ) : (
+    <div>
+      <Route exact path="/" component={Main} />
+      <Redirect to="/" />
+    </div>
   );
 };
 

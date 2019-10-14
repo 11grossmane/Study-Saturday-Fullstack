@@ -24,6 +24,7 @@ class Main extends Component {
     return (
       <div>
         <h1>Students</h1>
+
         <Route path="/addStudent" component={AddStudent} />
         <Link to={`/addStudent`}>Add Student</Link>
         <table>
